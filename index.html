@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Time!</title>
+</head>
+<style>
+    body{
+        text-align: center;
+        
+    }
+</style>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+        // Quiz questions and answers
+        const questions = [
+            {
+                question: "What is 2 + 3?",
+                options: ["3", "4", "5"],
+                correctAnswer: "5",
+            },
+            {
+                question: "What color is the sky?",
+                options: ["Blue", "Green", "Red"],
+                correctAnswer: "Blue",
+            },
+            {
+                question: "How many days are in a week?",
+                options: ["5", "6", "7"],
+                correctAnswer: "7",
+            },
+        ];
+
+        // Define our Quiz component
+        function Quiz() {
+            const [currentQuestion, setCurrentQuestion] = React.useState(0);
+            const [userAnswers, setUserAnswers] = React.useState([]);
+            const [showScore, setShowScore] = React.useState(false);
+
+            // Function to handle user selecting an answer
+            function handleAnswerOptionClick(answer) {
+                const updatedUserAnswers = [...userAnswers];
+                updatedUserAnswers[currentQuestion] = answer;
+                setUserAnswers(updatedUserAnswers);
+            }
+
+            // Function to calculate score
+            function calculateScore() {
+                let score = 0;
+                userAnswers.forEach((answer, index) => {
+                    if (answer === questions[index].correctAnswer) {
+                        score++;
+                    }
+                });
+                return score;
+            }
+
+            // Function to show score
+            function showResult() {
+                setShowScore(true);
+            }
+
+            // Function to restart the quiz
+            function restartQuiz() {
+                setCurrentQuestion(0);
+                setUserAnswers([]);
+                setShowScore(false);
+            }
+
+            // Rendering the quiz
+            if (showScore) {
+                return (
+                    <div>
+                        <h2>Your Score: {calculateScore()} out of {questions.length}</h2>
+                        <button onClick={restartQuiz}>Restart Quiz</button>
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <h2>{questions[currentQuestion].question}</h2>
+                        {questions[currentQuestion].options.map((option, index) => (
+                            <button key={index} onClick={() => handleAnswerOptionClick(option)}>{option}</button>
+                        ))}
+                        <button onClick={() => setCurrentQuestion(currentQuestion + 1)}>Next</button>
+                        <button onClick={showResult}>Submit</button>
+                    </div>
+                );
+            }
+        }
+
+        const reactRoot = ReactDOM.createRoot(document.getElementById("root"));
+        reactRoot.render(<Quiz />);
+    </script>
+</body>
+
+</html>
